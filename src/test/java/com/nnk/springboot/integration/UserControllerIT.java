@@ -71,7 +71,7 @@ public class UserControllerIT {
 
     @Test
     @WithMockUser(username = "test", authorities = {"ADMIN"})
-    public void getBibListPageAdminTest() throws Exception {
+    public void getUserPageAdminTest() throws Exception {
         mockMvc.perform(get("/user/list"))
                 .andExpect(status().isOk());
 
@@ -79,7 +79,7 @@ public class UserControllerIT {
 
     @Test
     @WithMockUser(username = "test2", authorities = {"USER"})
-    public void getBibListPageUserTest() throws Exception {
+    public void getUserPageUserTest() throws Exception {
         mockMvc.perform(get("/user/list"))
                 .andExpect(status().is(403));
 

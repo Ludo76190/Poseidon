@@ -72,7 +72,7 @@ public class RatingControllerIT {
 
     @Test
     @WithMockUser(username = "test", authorities = {"ADMIN"})
-    public void getBibListPageAdminTest() throws Exception {
+    public void getRatingPageAdminTest() throws Exception {
         mockMvc.perform(get("/rating/list"))
                 .andExpect(status().isOk());
 
@@ -80,7 +80,7 @@ public class RatingControllerIT {
 
     @Test
     @WithMockUser(username = "test2", authorities = {"USER"})
-    public void getBibListPageUserTest() throws Exception {
+    public void getRatingPageUserTest() throws Exception {
         mockMvc.perform(get("/rating/list"))
                 .andExpect(status().isOk());
 

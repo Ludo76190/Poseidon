@@ -72,7 +72,7 @@ public class RuleNameControllerIT {
 
     @Test
     @WithMockUser(username = "test", authorities = {"ADMIN"})
-    public void getBibListPageAdminTest() throws Exception {
+    public void getRuleNamePageAdminTest() throws Exception {
         mockMvc.perform(get("/ruleName/list"))
                 .andExpect(status().isOk());
 
@@ -80,7 +80,7 @@ public class RuleNameControllerIT {
 
     @Test
     @WithMockUser(username = "test2", authorities = {"USER"})
-    public void getBibListPageUserTest() throws Exception {
+    public void getRuleNamePageUserTest() throws Exception {
         mockMvc.perform(get("/ruleName/list"))
                 .andExpect(status().isOk());
 
