@@ -1,6 +1,8 @@
 package com.nnk.springboot.domain;
 
+import com.nnk.springboot.configuration.validation.ValidPassword;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,15 +12,16 @@ import javax.validation.constraints.NotBlank;
 @Table(name = "users")
 @Getter
 @Setter
+@NoArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
 
     @NotBlank(message = "Username is mandatory")
-    @Column(unique = true)
     private String username;
 
+    @ValidPassword
     private String password;
 
     @NotBlank(message = "FullName is mandatory")
