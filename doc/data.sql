@@ -1,13 +1,3 @@
-CREATE DATABASE if not exists demo;
-use demo;
-
-DROP TABLE if exists `bidlist`;
-DROP TABLE if exists `trade`;
-DROP TABLE if exists `rating`;
-DROP TABLE if exists `curvepoint`;
-DROP TABLE if exists `rulename`;
-DROP TABLE if exists `users`;
-
 
 CREATE TABLE BidList (
   BidListId tinyint(4) NOT NULL AUTO_INCREMENT,
@@ -35,7 +25,6 @@ CREATE TABLE BidList (
 
   PRIMARY KEY (BidListId)
 )
-ENGINE=InnoDB ;
 
 CREATE TABLE Trade (
   TradeId tinyint(4) NOT NULL AUTO_INCREMENT,
@@ -62,7 +51,6 @@ CREATE TABLE Trade (
 
   PRIMARY KEY (TradeId)
 )
-ENGINE=InnoDB ;
 
 CREATE TABLE CurvePoint (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
@@ -74,7 +62,6 @@ CREATE TABLE CurvePoint (
 
   PRIMARY KEY (Id)
 )
-ENGINE=InnoDB ;
 
 CREATE TABLE Rating (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
@@ -85,7 +72,6 @@ CREATE TABLE Rating (
 
   PRIMARY KEY (Id)
 )
-ENGINE=InnoDB ;
 
 CREATE TABLE RuleName (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
@@ -98,7 +84,6 @@ CREATE TABLE RuleName (
 
   PRIMARY KEY (Id)
 )
-ENGINE=InnoDB ;
 
 CREATE TABLE Users (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
@@ -107,10 +92,9 @@ CREATE TABLE Users (
   fullname VARCHAR(125),
   role VARCHAR(125),
 
-  PRIMARY KEY (Id),
-  UNIQUE KEY `UK_users_username` (`username`)
+  PRIMARY KEY (Id)
 )
-ENGINE=InnoDB ;
 
-insert into Users(fullname, username, password, role) values("Administrator", "admin", "$2a$10$pBV8ILO/s/nao4wVnGLrh.sa/rnr5pDpbeC4E.KNzQWoy8obFZdaa", "ADMIN")
-insert into Users(fullname, username, password, role) values("User", "user", "$2a$10$pBV8ILO/s/nao4wVnGLrh.sa/rnr5pDpbeC4E.KNzQWoy8obFZdaa", "USER")
+insert into Users(fullname, username, password, role) values("Administrator", "admin", "$2a$10$q4ijOkvkbw.ZlkDFoaLjlOK6awfAk3kC36avJE/9ZbWSwpv0KFKcO", "ADMIN")
+insert into Users(fullname, username, password, role) values("User", "user", "$2a$10$q4ijOkvkbw.ZlkDFoaLjlOK6awfAk3kC36avJE/9ZbWSwpv0KFKcO", "USER")
+insert into Users(fullname, username, password, role) values("Ludo", "ludo", "$2a$10$q4ijOkvkbw.ZlkDFoaLjlOK6awfAk3kC36avJE/9ZbWSwpv0KFKcO", "ADMIN")

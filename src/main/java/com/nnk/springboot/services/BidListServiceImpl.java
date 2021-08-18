@@ -1,5 +1,6 @@
 package com.nnk.springboot.services;
 
+import com.nnk.springboot.controllers.UserController;
 import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.repositories.BidListRepository;
 import org.apache.logging.log4j.LogManager;

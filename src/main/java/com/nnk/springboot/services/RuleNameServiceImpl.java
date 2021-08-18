@@ -2,6 +2,7 @@ package com.nnk.springboot.services;
 
 import com.nnk.springboot.domain.RuleName;
 import com.nnk.springboot.repositories.RuleNameRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

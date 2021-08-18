@@ -40,7 +40,22 @@
 				</tr>
 			</thead>
 			<tbody>
-			<!-- TODO: Show all RuleName to the table, the Action column will have Edit & Delete buttons -->
+				<tr th:if="${#lists.isEmpty(ruleNames)}">
+					<td colspan="8">No rule name registered</td>
+				</tr>
+				<tr th:each="rule :${ruleNames}">
+					<td><span th:text="${rule.id}"> Id </span></td>
+					<td><span th:text="${rule.name}"> Name </span></td>
+					<td><span th:text="${rule.description}"> Description </span></td>
+					<td><span th:text="${rule.json}"> json </span></td>
+					<td><span th:text="${rule.template}"> template </span></td>
+					<td><span th:text="${rule.sqlStr}"> sql </span></td>
+					<td><span th:text="${rule.sqlPart}"> sqlPart </span></td>
+					<td>
+						<a th:href="@{/ruleName/update/{id}(id=${rule.id})}">Edit</a>&nbsp;|&nbsp;
+						<a th:href="@{/ruleName/delete/{id}(id=${rule.id})}">Delete</a>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 	</div>

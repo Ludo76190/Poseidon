@@ -6,7 +6,7 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
-          <factory-entry name="entityManagerFactory" />
+          <factory-entry name="entityManagerFactory" value="e2676996-3ca7-4cbe-a6d4-6bb4a526f2b2" />
           <factory-entry name="spring-boot-skeleton" />
         </datasource-mapping>
         <naming-strategy-map />
@@ -23,6 +23,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -53,7 +54,6 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-orm:5.3.6" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context:5.3.6" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:5.3.6" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework:spring-beans:5.3.6" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aspects:5.3.6" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-security:2.4.5" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:2.4.5" level="project" />
@@ -132,5 +132,6 @@
     <orderEntry type="library" name="Maven: jakarta.validation:jakarta.validation-api:2.0.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.13.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:2.2" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-beans:5.3.8" level="project" />
   </component>
 </module>
