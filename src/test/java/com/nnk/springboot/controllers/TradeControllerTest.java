@@ -285,17 +285,6 @@ class TradeControllerTest {
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    public void getTradeDeleteWithException() throws Exception {
-        doThrow(new Exception()).when(tradeService).deleteTrade(eq(0));
-        mockMvc.perform(get("/trade/delete/0")
-                .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/trade/list"))
-                .andExpect(model().hasNoErrors());
-    }
-
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Test
     public void getTradeDeleteWithIllegalArgumentException() throws Exception {
         doThrow(new IllegalArgumentException("Invalid trade Id:0")).when(tradeService).deleteTrade(eq(0));
         mockMvc.perform(get("/trade/delete/0")

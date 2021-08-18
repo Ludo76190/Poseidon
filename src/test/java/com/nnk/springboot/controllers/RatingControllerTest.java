@@ -227,21 +227,6 @@ class RatingControllerTest {
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    public void getRatingDeleteWithException() throws Exception {
-        doThrow(new Exception()).when(ratingService).deleteRating(eq(0));
-        mockMvc.perform(get("/rating/delete/0")
-                .param("moodysRating", "moody")
-                .param("sandPRating", "sand")
-                .param("fitchRating", "fitch")
-                .param("orderNumber", "10")
-                .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/rating/list"))
-                .andExpect(model().hasNoErrors());
-    }
-
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Test
     public void getRatingDeleteWithIllegalArgumentException() throws Exception {
         doThrow(new IllegalArgumentException("Invalid rating Id:0")).when(ratingService).deleteRating(eq(0));
         mockMvc.perform(get("/rating/delete/0")

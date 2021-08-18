@@ -238,17 +238,6 @@ class CurveControllerTest {
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    public void getCurvePointDeleteWithException() throws Exception {
-        doThrow(new Exception()).when(curvePointService).deleteCurvePoint(eq(0));
-        mockMvc.perform(get("/curvePoint/delete/0")
-                .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/curvePoint/list"))
-                .andExpect(model().hasNoErrors());
-    }
-
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Test
     public void getCurvePointDeleteWithIllegalArgumentException() throws Exception {
         doThrow(new IllegalArgumentException("Invalid curve point Id:0")).when(curvePointService).deleteCurvePoint(eq(0));
         mockMvc.perform(get("/curvePoint/delete/0")

@@ -193,17 +193,6 @@ class RuleNameControllerTest {
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    public void getRuleNameDeleteWithException() throws Exception {
-        doThrow(new Exception()).when(ruleNameService).deleteRuleName(eq(0));
-        mockMvc.perform(get("/ruleName/delete/0")
-                .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/ruleName/list"))
-                .andExpect(model().hasNoErrors());
-    }
-
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Test
     public void getRuleNameDeleteWithIllegalArgumentException() throws Exception {
         doThrow(new IllegalArgumentException("Invalid rule name Id:0")).when(ruleNameService).deleteRuleName(eq(0));
         mockMvc.perform(get("/ruleName/delete/0")
