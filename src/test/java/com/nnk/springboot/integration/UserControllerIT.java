@@ -44,8 +44,8 @@ public class UserControllerIT {
         userRepository.save(user);
 
         userAdmin.setId(1);
-        userAdmin.setUsername("test");
-        userAdmin.setFullname("Test");
+        userAdmin.setUsername("test1");
+        userAdmin.setFullname("Test1");
         userAdmin.setPassword("Test12345!");
         userAdmin.setRole("ADMIN");
         userRepository.save(userAdmin);
@@ -88,17 +88,17 @@ public class UserControllerIT {
 
     }
 
-    @WithUserDetails("test1")
+    @WithMockUser(username = "test1", authorities = {"ADMIN"})
     @Test
     public void postUserValidateWithExistingUser() throws Exception {
         mockMvc.perform(post("/user/validate")
-                        .param("username", "test1")
-                        .param("fullname", "Test1")
+                        .param("username", "test3")
+                        .param("fullname", "Test3")
                         .param("role", "ADMIN")
                         .param("password", "Az3rtyuio!")
                         .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("user/add"))
+                .andExpect(status().is(302))
+                .andExpect(view().name("redirect:/user/list"))
                 .andExpect(model().hasNoErrors());
     }
 

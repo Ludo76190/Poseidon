@@ -37,8 +37,10 @@ public class UserController {
 
     @PostMapping("/user/validate")
     public String validate(@Valid User user, BindingResult result, Model model) throws Exception {
-        if (!result.hasErrors()) {;
+        if (!result.hasErrors()) {
+            logger.info("Validate User OK");
             userService.createUser(user);
+            logger.info("Success add user " + user.getUsername());
             model.addAttribute("users", userService.getAllUser());
             return "redirect:/user/list";
         }
@@ -49,8 +51,10 @@ public class UserController {
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         User user = userService.getUserById(id);
         if (user == null) {
+            logger.error("Error getting user " + id);
             throw new IllegalArgumentException("Invalid user Id:" + id);
         }
+        logger.info("Success get user " + id);
         model.addAttribute("user", user);
         return "user/update";
     }
@@ -59,9 +63,11 @@ public class UserController {
     public String updateUser(@PathVariable("id") Integer id, @Valid User user,
                              BindingResult result, Model model) throws Exception {
         if (result.hasErrors()) {
+            logger.error("Error get user " + id);
             return "user/update";
         }
         userService.updateUser(user,id);
+        logger.info("Success update user " + id);
         model.addAttribute("users", userService.getAllUser());
         return "redirect:/user/list";
     }
@@ -70,9 +76,11 @@ public class UserController {
     public String deleteUser(@PathVariable("id") Integer id, Model model) throws Exception {
         User user = userService.getUserById(id);
         if ( user == null) {
+            logger.error("Error User not found");
             throw new IllegalArgumentException("Invalid user Id:" + id);
         }
         userService.deleteUser(id);
+        logger.info("Success delete user " + id);
         model.addAttribute("users", userService.getAllUser());
         return "redirect:/user/list";
     }

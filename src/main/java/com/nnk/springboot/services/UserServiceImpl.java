@@ -21,23 +21,24 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createUser(User user) throws Exception {
         if (userRepository.findUserByUsername(user.getUsername()) != null) {
-            logger.error("username already exist");
+            logger.error("username "+ user.getUsername() +" already exist");
             throw new Exception("Username " + user.getUsername() +" already exists.");
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        logger.info("Success password encoded");
         user.setPassword(encoder.encode(user.getPassword()));
-        logger.info("user dans service="+user.getUsername());
-        logger.info("user password dans service="+user.getPassword());
         userRepository.save(user);
+        logger.info("Success create user with encoded password");
 
     }
 
     @Override
-    public void updateUser(User user, Integer id) {
+    public void updateUser(User user, Integer id) throws Exception {
         user.setId(id);
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(user);
+        logger.info("Success update user" + user.getUsername());
 
     }
 
@@ -52,9 +53,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Integer id) throws Exception {
-        userRepository.findById(id).orElseThrow(() -> new Exception("RuleName not found " + id ));
+    public void deleteUser(Integer id) {
         userRepository.deleteById(id);
+        logger.info("Success delete user " + id);
     }
 
     @Override

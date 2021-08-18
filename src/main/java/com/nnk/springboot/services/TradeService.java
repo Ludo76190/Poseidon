@@ -9,5 +9,5 @@ public interface TradeService {
     void updateTrade(Trade trade, Integer id);
     List<Trade> getAllTrade();
     Trade getTradeById(Integer id);
-    void deleteTrade(Integer id) throws Exception;
+    void deleteTrade(Integer id);
 }

@@ -2,6 +2,8 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.RuleName;
 import com.nnk.springboot.services.RuleNameService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,9 @@ import javax.validation.Valid;
 
 @Controller
 public class RuleNameController {
+
+    private static final Logger logger = LogManager.getLogger(RuleNameController.class);
+
     // TODO: Inject RuleName service
     @Autowired
     RuleNameService ruleNameService;
@@ -36,9 +41,11 @@ public class RuleNameController {
     public String validate(@Valid RuleName ruleName, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return RuleName list
         if (result.hasErrors()) {
+            logger.error("Error add RuleName");
             return "ruleName/add";
         }
         ruleNameService.createRuleName(ruleName);
+        logger.info("Success add RuleName");
         model.addAttribute("ruleName", ruleNameService.getAllRuleName());
         return "redirect:/ruleName/list";
     }
@@ -48,9 +55,11 @@ public class RuleNameController {
         // TODO: get RuleName by Id and to model then show to the form
         try {
             RuleName ruleName = ruleNameService.getRuleNameById(id);
+            logger.info ("Success get RuleName " + id);
             model.addAttribute("ruleName", ruleName);
             return "ruleName/update";
         } catch (IllegalArgumentException e) {
+            logger.error("Error getting RuleName " + id);
             e.printStackTrace();
         }
         return "redirect:/ruleName/list";
@@ -61,9 +70,11 @@ public class RuleNameController {
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update RuleName and return RuleName list
         if (result.hasErrors()) {
+            logger.error("Error updating RuleName " + id);
             return "RuleName/update";
         }
         ruleNameService.updateRuleName(ruleName, id);
+        logger.info("Succes update RuleName " + id);
         model.addAttribute("ruleName", ruleNameService.getAllRuleName());
         return "redirect:/ruleName/list";
     }
@@ -73,7 +84,9 @@ public class RuleNameController {
         // TODO: Find RuleName by Id and delete the RuleName, return to Rule list
         try {
             ruleNameService.deleteRuleName(id);
+            logger.info("Success delete RuleName " + id);
         } catch (Exception e) {
+            logger.error("Error deleting RuleName " + id);
             e.printStackTrace();
         }
         model.addAttribute("ruleName", ruleNameService.getAllRuleName());

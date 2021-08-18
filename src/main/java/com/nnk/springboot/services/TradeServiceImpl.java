@@ -2,6 +2,8 @@ package com.nnk.springboot.services;
 
 import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.repositories.TradeRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,8 @@ import java.util.List;
 @Service
 public class TradeServiceImpl implements TradeService {
 
+    private static final Logger logger = LogManager.getLogger(TradeServiceImpl.class);
+
     @Autowired
     private TradeRepository tradeRepository;
 
@@ -18,6 +22,7 @@ public class TradeServiceImpl implements TradeService {
     public void createTrade(Trade trade) {
         trade.setCreationDate(new Timestamp(System.currentTimeMillis()));
         tradeRepository.save(trade);
+        logger.info("Success create Trade");
     }
 
     @Override
@@ -29,6 +34,7 @@ public class TradeServiceImpl implements TradeService {
         updatedTrade.setType(trade.getType());
         updatedTrade.setRevisionDate(new Timestamp(System.currentTimeMillis()));
         tradeRepository.save(updatedTrade);
+        logger.info("Success update Trade");
     }
 
     @Override
@@ -42,9 +48,8 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Override
-    public void deleteTrade(Integer id) throws Exception {
-        tradeRepository.findById(id).orElseThrow(() -> new Exception("RuleName not found " + id ));
+    public void deleteTrade(Integer id) {
         tradeRepository.deleteById(id);
-
+        logger.info("Success delete Trade " + id);
     }
 }

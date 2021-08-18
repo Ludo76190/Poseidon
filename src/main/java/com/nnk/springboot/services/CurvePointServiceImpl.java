@@ -2,6 +2,8 @@ package com.nnk.springboot.services;
 
 import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.repositories.CurvePointRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,8 @@ import java.util.List;
 @Service
 public class CurvePointServiceImpl implements CurvePointService{
 
+    private static final Logger logger = LogManager.getLogger(CurvePointServiceImpl.class);
+
     @Autowired
     private CurvePointRepository curvePointRepository;
 
@@ -18,6 +22,7 @@ public class CurvePointServiceImpl implements CurvePointService{
     public void createCurvePoint(CurvePoint curvePoint) {
         curvePoint.setCreationDate(new Timestamp(System.currentTimeMillis()));
         curvePointRepository.save(curvePoint);
+        logger.info("Success create CurvePoint");
     }
 
     @Override
@@ -28,7 +33,7 @@ public class CurvePointServiceImpl implements CurvePointService{
         updatedCurvePoint.setTerm(curvePoint.getTerm());
         updatedCurvePoint.setValue(curvePoint.getValue());
         curvePointRepository.save(updatedCurvePoint);
-
+        logger.info("Success update CurvePoint");
     }
 
     @Override
@@ -42,8 +47,8 @@ public class CurvePointServiceImpl implements CurvePointService{
     }
 
     @Override
-    public void deleteCurvePoint(Integer id) throws Exception {
-        curvePointRepository.findById(id).orElseThrow(() -> new Exception("CurvePoint not found " + id ));
+    public void deleteCurvePoint(Integer id) {
         curvePointRepository.deleteById(id);
+        logger.info("Success delete CurvePoint" + id);
     }
 }

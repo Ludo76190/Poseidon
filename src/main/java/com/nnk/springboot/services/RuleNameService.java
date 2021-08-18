@@ -9,6 +9,6 @@ public interface RuleNameService {
     void updateRuleName(RuleName rule, Integer id);
     List<RuleName> getAllRuleName();
     RuleName getRuleNameById(Integer id);
-    void deleteRuleName(Integer id) throws Exception;
+    void deleteRuleName(Integer id);
 
 }

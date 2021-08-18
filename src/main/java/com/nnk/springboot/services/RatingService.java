@@ -10,6 +10,6 @@ public interface RatingService {
     void updateRating(Rating rating, Integer id);
     List<Rating> getAllRating();
     Rating getRatingById(Integer id);
-    void deleteRating(Integer id) throws Exception;
+    void deleteRating(Integer id);
 
 }

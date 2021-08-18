@@ -2,6 +2,8 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.services.CurvePointService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,9 @@ import javax.validation.Valid;
 
 @Controller
 public class CurveController {
+
+    private static final Logger logger = LogManager.getLogger(CurveController.class);
+
     // TODO: Inject Curve Point service
     @Autowired
     private CurvePointService curvePointService;
@@ -36,9 +41,11 @@ public class CurveController {
     public String validate(@Valid CurvePoint curvePoint, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return Curve list
         if (result.hasErrors()) {
+            logger.error("Error add CurvePoint");
             return "curvePoint/add";
         }
         curvePointService.createCurvePoint(curvePoint);
+        logger.info("Success add CurvePoint");
         model.addAttribute("curvePoint", curvePointService.getAllCurvePoint());
         return "redirect:/curvePoint/list";
     }
@@ -48,9 +55,11 @@ public class CurveController {
         // TODO: get CurvePoint by Id and to model then show to the form
         try {
             CurvePoint curvePoint = curvePointService.getCurvePointById(id);
+            logger.info ("Success get CurvePoint " + id);
             model.addAttribute("curvePoint", curvePoint);
             return "curvePoint/update";
         } catch (IllegalArgumentException e) {
+            logger.error("Error getting CurvePoint " + id);
             e.printStackTrace();
         }
         return "redirect:/curvePoint/list";
@@ -61,9 +70,11 @@ public class CurveController {
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Curve and return Curve list
         if (result.hasErrors()) {
+            logger.error("Error updating CurvePoint " + id);
             return "curvePoint/update";
         }
         curvePointService.updateCurvePoint(curvePoint, id);
+        logger.info("Succes update CurvePoint " + id);
         model.addAttribute("curvePoint", curvePointService.getAllCurvePoint());
         return "redirect:/curvePoint/list";
     }
@@ -73,7 +84,9 @@ public class CurveController {
         // TODO: Find Curve by Id and delete the Curve, return to Curve list
         try {
             curvePointService.deleteCurvePoint(id);
+            logger.info("Success delete CurvePoint " + id);
         } catch (Exception e) {
+            logger.error("Error deleting CurvePoint " + id);
             e.printStackTrace();
         }
         model.addAttribute("curvePoint", curvePointService.getAllCurvePoint());

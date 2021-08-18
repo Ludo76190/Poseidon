@@ -9,6 +9,6 @@ public interface UserService {
     void updateUser(User user, Integer id) throws Exception;
     List<User> getAllUser();
     User getUserById(Integer id);
-    void deleteUser(Integer id) throws Exception;
+    void deleteUser(Integer id);
     User getUserByUsername(String username);
 }

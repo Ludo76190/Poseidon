@@ -2,6 +2,8 @@ package com.nnk.springboot.services;
 
 import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.repositories.RatingRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,13 +12,15 @@ import java.util.List;
 @Service
 public class RatingServiceImpl implements RatingService {
 
+    private static final Logger logger = LogManager.getLogger(RatingServiceImpl.class);
+
     @Autowired
     private RatingRepository ratingRepository;
 
     @Override
     public void createRating(Rating rating) {
         ratingRepository.save(rating);
-
+        logger.info("Success create Rating");
     }
 
     @Override
@@ -27,6 +31,7 @@ public class RatingServiceImpl implements RatingService {
         updatedRating.setFitchRating(rating.getFitchRating());
         updatedRating.setOrderNumber(rating.getOrderNumber());
         ratingRepository.save(updatedRating);
+        logger.info("Success update Rating");
 
     }
 
@@ -41,8 +46,8 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public void deleteRating(Integer id) throws Exception {
-        ratingRepository.findById(id).orElseThrow(() -> new Exception("Rating not found " + id ));
+    public void deleteRating(Integer id) {
         ratingRepository.deleteById(id);
+        logger.info("Success delete Rating " + id);
     }
 }

@@ -10,6 +10,6 @@ public interface CurvePointService {
     void updateCurvePoint(CurvePoint curve, Integer id);
     List<CurvePoint> getAllCurvePoint();
     CurvePoint getCurvePointById(Integer id);
-    void deleteCurvePoint(Integer id) throws Exception;
+    void deleteCurvePoint(Integer id) ;
 
 }

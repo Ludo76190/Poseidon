@@ -1,6 +1,5 @@
 package com.nnk.springboot.services;
 
-import com.nnk.springboot.controllers.UserController;
 import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.repositories.BidListRepository;
 import org.apache.logging.log4j.LogManager;
@@ -23,6 +22,7 @@ public class BidListServiceImpl implements BidListService{
     public void createBidList(BidList bidList)  {
         bidList.setCreationDate(new Timestamp(System.currentTimeMillis()));
         bidListRepository.save(bidList);
+        logger.info("BidList created");
     }
 
     @Override
@@ -33,7 +33,7 @@ public class BidListServiceImpl implements BidListService{
         updatedBidList.setBidQuantity(bidList.getBidQuantity());
         updatedBidList.setRevisionDate(new Timestamp((System.currentTimeMillis())));
         bidListRepository.save(updatedBidList);
-
+        logger.info("BidList updated");
     }
 
     @Override
@@ -49,5 +49,6 @@ public class BidListServiceImpl implements BidListService{
     @Override
     public void deleteBidList(Integer id) {
         bidListRepository.deleteById(id);
+        logger.info("Success delete BidList" + id);
     }
 }

@@ -1,6 +1,8 @@
 package com.nnk.springboot.services;
 
 import com.nnk.springboot.domain.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,6 +17,8 @@ import java.util.Set;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
+    private static final Logger logger = LogManager.getLogger(UserDetailsServiceImpl.class);
+
     @Autowired
     private UserService userService;
 
@@ -22,6 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.getUserByUsername(username);
         if (user == null) {
+            logger.error("User " + username + " not found");
             throw new UsernameNotFoundException("Username " + username + " not found");
         }
 
