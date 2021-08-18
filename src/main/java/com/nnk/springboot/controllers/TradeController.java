@@ -1,6 +1,8 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.Trade;
+import com.nnk.springboot.services.TradeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,11 +16,14 @@ import javax.validation.Valid;
 @Controller
 public class TradeController {
     // TODO: Inject Trade service
+    @Autowired
+    TradeService tradeService;
 
     @RequestMapping("/trade/list")
     public String home(Model model)
     {
         // TODO: find all Trade, add to model
+        model.addAttribute("trades", tradeService.getAllTrade());
         return "trade/list";
     }
 
@@ -30,12 +35,24 @@ public class TradeController {
     @PostMapping("/trade/validate")
     public String validate(@Valid Trade trade, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return Trade list
-        return "trade/add";
+        if (result.hasErrors()) {
+            return "trade/add";
+        }
+        tradeService.createTrade(trade);
+        model.addAttribute("trade", tradeService.getAllTrade());
+        return "redirect:/trade/list";
     }
 
     @GetMapping("/trade/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         // TODO: get Trade by Id and to model then show to the form
+        try {
+            Trade trade = tradeService.getTradeById(id);
+            model.addAttribute("trade", trade);
+            return "trade/update";
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
         return "trade/update";
     }
 
@@ -43,12 +60,23 @@ public class TradeController {
     public String updateTrade(@PathVariable("id") Integer id, @Valid Trade trade,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Trade and return Trade list
+        if (result.hasErrors()) {
+            return "trade/update";
+        }
+        tradeService.updateTrade(trade, id);
+        model.addAttribute("trade", tradeService.getAllTrade());
         return "redirect:/trade/list";
     }
 
     @GetMapping("/trade/delete/{id}")
     public String deleteTrade(@PathVariable("id") Integer id, Model model) {
         // TODO: Find Trade by Id and delete the Trade, return to Trade list
+        try {
+            tradeService.deleteTrade(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        model.addAttribute("trade", tradeService.getAllTrade());
         return "redirect:/trade/list";
     }
 }
