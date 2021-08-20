@@ -2,6 +2,7 @@ C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\sprin
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\controllers\HomeController.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\Application.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\controllers\RuleNameController.java
+C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\configuration\security\myAuthenticationSuccessHandler.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\services\RatingService.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\services\RuleNameServiceImpl.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\services\UserServiceImpl.java
@@ -35,3 +36,4 @@ C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\sprin
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\services\TradeService.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\repositories\TradeRepository.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\services\RuleNameService.java
+C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\configuration\exception\AlreadyExistException.java

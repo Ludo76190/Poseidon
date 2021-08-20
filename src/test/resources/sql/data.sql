@@ -1,4 +1,4 @@
-CREATE DATABASE if not exists poseidontest;
+CREATE DATABASE if not exists demo_test;
 
 use poseidontest;
 

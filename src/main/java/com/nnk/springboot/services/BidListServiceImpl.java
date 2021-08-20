@@ -1,5 +1,6 @@
 package com.nnk.springboot.services;
 
+import com.nnk.springboot.configuration.exception.AlreadyExistException;
 import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.repositories.BidListRepository;
 import org.apache.logging.log4j.LogManager;
@@ -19,14 +20,22 @@ public class BidListServiceImpl implements BidListService{
     private BidListRepository bidListRepository;
 
     @Override
-    public void createBidList(BidList bidList)  {
+    public void createBidList(BidList bidList) throws Exception {
+        if (bidListRepository.findBidListByAccount(bidList.getAccount()) != null) {
+            logger.error("bidList "+ bidList.getAccount() +" already exist");
+            throw new AlreadyExistException("BidList " + bidList.getAccount() + " already exists.");
+        }
         bidList.setCreationDate(new Timestamp(System.currentTimeMillis()));
         bidListRepository.save(bidList);
         logger.info("BidList created");
     }
 
     @Override
-    public void updateBidList(BidList bidList, Integer id) {
+    public void updateBidList(BidList bidList, Integer id) throws Exception {
+        if (bidListRepository.findBidListByAccount(bidList.getAccount()) != null) {
+            logger.error("bidList "+ bidList.getAccount() +" already exist");
+            throw new AlreadyExistException("BidList " + bidList.getAccount() + " already exists.");
+        }
         BidList updatedBidList = getBidListById(id);
         updatedBidList.setAccount(bidList.getAccount());
         updatedBidList.setType(bidList.getType());

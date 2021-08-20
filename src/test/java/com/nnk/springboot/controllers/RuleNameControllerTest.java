@@ -153,8 +153,8 @@ class RuleNameControllerTest {
                     .param("name", "Rule name")
                     .param("description", "Rule description")
                     .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/ruleName/list"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("ruleName/add"))
                 .andExpect(model().hasNoErrors());
     }
 

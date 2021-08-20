@@ -1,5 +1,6 @@
 package com.nnk.springboot.services;
 
+import com.nnk.springboot.configuration.exception.AlreadyExistException;
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.repositories.UserRepository;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +23,7 @@ public class UserServiceImpl implements UserService {
     public void createUser(User user) throws Exception {
         if (userRepository.findUserByUsername(user.getUsername()) != null) {
             logger.error("username "+ user.getUsername() +" already exist");
-            throw new Exception("Username " + user.getUsername() +" already exists.");
+            throw new AlreadyExistException("Username " + user.getUsername() + " already exists.");
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         logger.info("Success password encoded");
@@ -34,6 +35,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(User user, Integer id) throws Exception {
+        if (userRepository.findUserByUsername(user.getUsername()) != null) {
+            logger.error("username "+ user.getUsername() +" already exist");
+            throw new AlreadyExistException("Username " + user.getUsername() + " already exists.");
+        }
         user.setId(id);
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(user.getPassword()));

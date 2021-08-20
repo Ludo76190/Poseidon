@@ -163,8 +163,8 @@ class RatingControllerTest {
                     .param("fitchRating", "fitch")
                     .param("orderNumber", "10")
                     .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/rating/list"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("rating/add"))
                 .andExpect(model().hasNoErrors());
     }
 

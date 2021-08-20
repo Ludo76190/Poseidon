@@ -2,94 +2,141 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.services.RatingService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
+/**
+ * To manage CRUD operations for Rating
+ */
 @Controller
 public class RatingController {
 
-    private static final Logger logger = LogManager.getLogger(RatingController.class);
-
-    // TODO: Inject Rating service
     @Autowired
-    RatingService ratingService;
+    private RatingService ratingService;
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(RatingController.class);
 
+    /**
+     * To return rating page
+     * @param model filled with list of all rating
+     * @return rating page
+     */
     @RequestMapping("/rating/list")
-    public String home(Model model)
-    {
-        // TODO: find all Rating, add to model
+    public String home(Model model) {
         model.addAttribute("ratings", ratingService.getAllRating());
         return "rating/list";
     }
 
+    /**
+     * To display the add form
+     * @param model initialised with a new rating
+     * @return the add form
+     */
     @GetMapping("/rating/add")
-    public String addRatingForm(Rating rating) {
+    public String addRatingForm(Model model) {
+        model.addAttribute("rating", new Rating());
         return "rating/add";
     }
 
+    /**
+     * To create a rating
+     * @param rating the rating entered
+     * @param result the eventual errors in the form
+     * @param model model of the rating to be created, initialised with a new rating if success
+     * @return The add form, either with binding errors or with a new rating
+     */
     @PostMapping("/rating/validate")
-    public String validate(@Valid Rating rating, BindingResult result, Model model) {
-        // TODO: check data valid and save to db, after saving return Rating list
+    public String validate(@ModelAttribute @Valid Rating rating, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            logger.error("Error add Rating");
             return "rating/add";
         }
-        ratingService.createRating(rating);
-        logger.info("Success add Rating");
-        model.addAttribute("rating", ratingService.getAllRating());
-        return "redirect:/rating/list";
+        try {
+            ratingService.createRating(rating);
+            LOGGER.info("Rating added");
+            model.addAttribute("message", "Add successful");
+            model.addAttribute("rating", new Rating());
+        } catch (Exception e) {
+            LOGGER.error("Error during adding rating " + e.toString());
+            model.addAttribute("message", "Issue during creating rating, please retry later");
+        }
+        return "rating/add";
     }
 
+    /**
+     * To display the update form initialised with the data of the rating to be updated
+     * @param id id of the rating to be updated
+     * @param model model with the rating to be updated
+     * @param attributes Message to be displayed on redirect page
+     * @return update form if success, rating list otherwise
+     */
     @GetMapping("/rating/update/{id}")
-    public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        // TODO: get Rating by Id and to model then show to the form
+    public String showUpdateForm(@PathVariable("id") Integer id, Model model, RedirectAttributes attributes) {
         try {
-            Rating rating = ratingService.getRatingById(id);
-            logger.info ("Success get Rating " + id);
-            model.addAttribute("rating", rating);
+            model.addAttribute("rating", ratingService.getRatingById(id));
             return "rating/update";
         } catch (IllegalArgumentException e) {
-            logger.error("Error getting Rating " + id);
-            e.printStackTrace();
+            LOGGER.error("Error during getting rating " + e.toString());
+            attributes.addFlashAttribute("message", e.getMessage());
+            return "redirect:/rating/list";
         }
-        return "redirect:/rating/list";
     }
 
+    /**
+     * To update a rating 
+     * @param id id of the rating to be updated
+     * @param rating Updated data for the rating
+     * @param result the eventual errors in the form
+     * @param attributes Message to be displayed on redirect page
+     * @return rating list if success, update form with errors otherwise
+     */
     @PostMapping("/rating/update/{id}")
-    public String updateRating(@PathVariable("id") Integer id, @Valid Rating rating,
-                             BindingResult result, Model model) {
-        // TODO: check required fields, if valid call service to update Rating and return Rating list
+    public String updateRating(@PathVariable("id") Integer id, @ModelAttribute @Valid Rating rating,
+                             BindingResult result, RedirectAttributes attributes) {
         if (result.hasErrors()) {
-            logger.error("Error updating Rating " + id);
+            rating.setId(id);
             return "rating/update";
         }
-        ratingService.updateRating(rating, id);
-        logger.info("Succes update Rating " + id);
-        model.addAttribute("rating", ratingService.getAllRating());
+        try {
+            ratingService.updateRating(rating, id);
+            LOGGER.info("Update of rating id " + id + " successful");
+            attributes.addFlashAttribute("message", "Update successful");            
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Error during getting rating " + e.toString());
+            attributes.addFlashAttribute("message", e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error during updating rating " + e.toString());
+            attributes.addFlashAttribute("message", "Issue during updating, please retry later");
+        }
         return "redirect:/rating/list";
     }
 
+    /**
+     * To delete a rating
+     * @param id id of the rating to be updated
+     * @param attributes Message to be displayed on redirect page
+     * @return rating list page
+     */
     @GetMapping("/rating/delete/{id}")
-    public String deleteRating(@PathVariable("id") Integer id, Model model) {
-        // TODO: Find Rating by Id and delete the Rating, return to Rating list
+    public String deleteRating(@PathVariable("id") Integer id, RedirectAttributes attributes) {
         try {
             ratingService.deleteRating(id);
-            logger.info("Success delete Rating " + id);
+            LOGGER.info("Delete of rating id " + id + " successful");
+            attributes.addFlashAttribute("message", "Delete successful");
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Error during deleting rating " + e.toString());
+            attributes.addFlashAttribute("message", e.getMessage());
         } catch (Exception e) {
-            logger.error("Error deleting Rating " + id);
-            e.printStackTrace();
+            LOGGER.error("Error during deleting rating " + e.toString());
+            attributes.addFlashAttribute("message", "Issue during deleting, please retry later");
         }
-        model.addAttribute("rating", ratingService.getAllRating());
         return "redirect:/rating/list";
     }
 }

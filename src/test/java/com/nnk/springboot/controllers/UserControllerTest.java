@@ -131,8 +131,8 @@ class UserControllerTest {
                 .param("role", "ADMIN")
                 .param("password", "User@Test5")
                 .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/user/list"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/add"))
                 .andExpect(model().hasNoErrors());
     }
 

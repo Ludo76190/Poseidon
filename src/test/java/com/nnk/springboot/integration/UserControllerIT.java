@@ -30,7 +30,6 @@ public class UserControllerIT {
     @Autowired
     private UserRepository userRepository;
 
-
     User user = new User();
     User userAdmin = new User();
     User userUser = new User();
@@ -97,8 +96,8 @@ public class UserControllerIT {
                         .param("role", "ADMIN")
                         .param("password", "Az3rtyuio!")
                         .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/user/list"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/add"))
                 .andExpect(model().hasNoErrors());
     }
 

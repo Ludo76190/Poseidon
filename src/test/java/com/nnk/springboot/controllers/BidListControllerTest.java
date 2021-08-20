@@ -120,7 +120,7 @@ class BidListControllerTest {
                 .param("type", "livret")
                 .param("bidQuantity", "5")
                 .with(csrf())
-        ).andExpect(status().is(302));
+        ).andExpect(status().isOk());
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -205,8 +205,8 @@ class BidListControllerTest {
                     .param("type", "type")
                     .param("bidQuantity", "10")
                     .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/bidList/list"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("bidList/add"))
                 .andExpect(model().hasNoErrors());
     }
 

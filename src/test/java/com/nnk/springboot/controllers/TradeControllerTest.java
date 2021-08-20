@@ -150,8 +150,8 @@ class TradeControllerTest {
                     .param("type", "type")
                     .param("buyQuantity", "10")
                     .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/trade/list"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("trade/add"))
                 .andExpect(model().hasNoErrors());
     }
 
@@ -254,8 +254,8 @@ class TradeControllerTest {
                 .param("type", "type")
                 .param("buyQuantity", "10")
                 .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/trade/list"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("trade/add"))
                 .andExpect(model().hasNoErrors());
     }
 

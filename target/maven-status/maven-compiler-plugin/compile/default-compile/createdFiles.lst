@@ -18,6 +18,7 @@ com\nnk\springboot\controllers\HomeController.class
 com\nnk\springboot\services\UserServiceImpl.class
 com\nnk\springboot\services\RuleNameService.class
 com\nnk\springboot\domain\User.class
+com\nnk\springboot\configuration\exception\AlreadyExistException.class
 com\nnk\springboot\repositories\TradeRepository.class
 com\nnk\springboot\configuration\validation\PasswordValidator.class
 com\nnk\springboot\repositories\BidListRepository.class
@@ -30,6 +31,7 @@ com\nnk\springboot\services\RatingServiceImpl.class
 com\nnk\springboot\services\CurvePointServiceImpl.class
 com\nnk\springboot\services\CurvePointService.class
 com\nnk\springboot\domain\Rating.class
+com\nnk\springboot\configuration\security\myAuthenticationSuccessHandler.class
 com\nnk\springboot\controllers\RuleNameController.class
 com\nnk\springboot\controllers\BidListController.class
 com\nnk\springboot\repositories\CurvePointRepository.class

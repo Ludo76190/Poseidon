@@ -148,8 +148,8 @@ class CurveControllerTest {
                     .param("term", "10")
                     .param("value", "10")
                     .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/curvePoint/list"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("curvePoint/add"))
                 .andExpect(model().hasNoErrors());
     }
 
