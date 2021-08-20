@@ -112,9 +112,6 @@ public class RuleNameController {
         } catch (IllegalArgumentException e) {
             LOGGER.error("Error during updating rule name " + e.toString());
             attributes.addFlashAttribute("message", e.getMessage());
-        } catch (Exception e) {
-            LOGGER.error("Error during updating rule name " + e.toString());
-            attributes.addFlashAttribute("message", "Issue during updating, please retry later");
         }
         return "redirect:/ruleName/list";
     }
@@ -134,9 +131,6 @@ public class RuleNameController {
         } catch (IllegalArgumentException e) {
             LOGGER.error("Error during deleting rule name " + e.toString());
             attributes.addFlashAttribute("message", e.getMessage());
-        } catch (Exception e) {
-            LOGGER.error("Error during deleting rule name " + e.toString());
-            attributes.addFlashAttribute("message", "Issue during deleting, please retry later");
         }
         return "redirect:/ruleName/list";
     }

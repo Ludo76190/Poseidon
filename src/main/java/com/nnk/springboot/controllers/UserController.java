@@ -148,9 +148,6 @@ public class UserController {
         } catch (IllegalArgumentException e) {
             attributes.addFlashAttribute("message", e.getMessage());
             LOGGER.error("Error during deleting User id " + id + " " + e.toString());
-        } catch (Exception e) {
-            attributes.addFlashAttribute("message", "Issue during deleting, please retry later");
-            LOGGER.error("Error during deleting User id " + id + " " + e.toString());
         }
         return "redirect:/user/list";
     }

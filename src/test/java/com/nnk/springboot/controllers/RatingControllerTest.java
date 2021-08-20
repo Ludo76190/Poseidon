@@ -59,7 +59,8 @@ class RatingControllerTest {
         mockMvc.perform(get("/rating/list"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("rating/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(model().attribute("ratings", ratings));
     }
 
     @WithMockUser(username = "user", authorities = {"USER"})
@@ -111,7 +112,8 @@ class RatingControllerTest {
         mockMvc.perform(get("/rating/update/0"))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/rating/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Invalid rating Id:0"));
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -128,7 +130,8 @@ class RatingControllerTest {
         mockMvc.perform(get("/rating/update/1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("rating/update"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(model().attribute("rating", rating));
     }
 
     @Test
@@ -144,13 +147,14 @@ class RatingControllerTest {
         mockMvc.perform(get("/rating/delete/0"))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/rating/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Delete successful"));
     }
 
     @Test
     public void postRatingValidateWithoutAuthentication() throws Exception {
         mockMvc.perform(post("/rating/validate")
-                .with(csrf()))
+                        .with(csrf()))
                 .andExpect(status().is(302));
     }
 
@@ -158,32 +162,21 @@ class RatingControllerTest {
     @Test
     public void postRatingValidate() throws Exception {
         mockMvc.perform(post("/rating/validate")
-                    .param("moodysRating", "moody")
-                    .param("sandPRating", "sand")
-                    .param("fitchRating", "fitch")
-                    .param("orderNumber", "10")
-                    .with(csrf()))
+                        .param("moodysRating", "moody")
+                        .param("sandPRating", "sand")
+                        .param("fitchRating", "fitch")
+                        .param("orderNumber", "10")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("rating/add"))
-                .andExpect(model().hasNoErrors());
-    }
-
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Test
-    public void postRatingValidateMoodysEmpty() throws Exception {
-        this.mockMvc.perform(post("/rating/update/0")
-                .param("moodysRating", "")
-                .param("sandPRating", "sandPRating")
-                .param("fitchRating", "fitchRating")
-                .param("orderNumber", "1")
-                .with(csrf())
-        ).andExpect(redirectedUrl("/rating/list"));
+                .andExpect(model().hasNoErrors())
+                .andExpect(model().attribute("message", "Add successful"));
     }
 
     @Test
     public void postRatingUpdateWithoutAuthentication() throws Exception {
         mockMvc.perform(post("/rating/update/0")
-                .with(csrf()))
+                        .with(csrf()))
                 .andExpect(status().is(302));
     }
 
@@ -191,38 +184,31 @@ class RatingControllerTest {
     @Test
     public void postRatingUpdate() throws Exception {
         mockMvc.perform(post("/rating/update/1")
-                .param("moodysRating", "moody")
-                .param("sandPRating", "sand")
-                .param("fitchRating", "fitch")
-                .param("orderNumber", "10")
-                .with(csrf()))
+                        .param("moodysRating", "moody")
+                        .param("sandPRating", "sand")
+                        .param("fitchRating", "fitch")
+                        .param("orderNumber", "10")
+                        .with(csrf()))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/rating/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Update successful"));
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    public void postRatingUpdateFitchRatingEmpty() throws Exception {
-        this.mockMvc.perform(post("/rating/update/0")
-                .param("moodysRating", "moodysRating")
-                .param("sandPRating", "sandPRating")
-                .param("fitchRating", "")
-                .param("orderNumber", "1")
-                .with(csrf())
-        ).andExpect(redirectedUrl("/rating/list"));
-    }
-
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Test
-    public void postRatingUpdateSandPRatingEmpty() throws Exception {
-        this.mockMvc.perform(post("/rating/update/0")
-                .param("moodysRating", "moodysRating")
-                .param("sandPRating", "")
-                .param("fitchRating", "fitchRating")
-                .param("orderNumber", "1")
-                .with(csrf())
-        ).andExpect(redirectedUrl("/rating/list"));
+    public void postRatingUpdateWithIllegalArgumentException() throws Exception {
+        doThrow(new IllegalArgumentException("Invalid rating Id:0")).when(ratingService).updateRating(any(Rating.class), eq(0));
+        mockMvc.perform(post("/rating/update/0")
+                        .param("moodysRating", "moody")
+                        .param("sandPRating", "sand")
+                        .param("fitchRating", "fitch")
+                        .param("orderNumber", "10")
+                        .with(csrf()))
+                .andExpect(status().is(302))
+                .andExpect(view().name("redirect:/rating/list"))
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Invalid rating Id:0"));
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -230,10 +216,11 @@ class RatingControllerTest {
     public void getRatingDeleteWithIllegalArgumentException() throws Exception {
         doThrow(new IllegalArgumentException("Invalid rating Id:0")).when(ratingService).deleteRating(eq(0));
         mockMvc.perform(get("/rating/delete/0")
-                .with(csrf()))
+                        .with(csrf()))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/rating/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Invalid rating Id:0"));
     }
 
 

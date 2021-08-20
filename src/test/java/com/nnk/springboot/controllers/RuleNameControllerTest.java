@@ -10,11 +10,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -55,15 +57,16 @@ class RuleNameControllerTest {
         mockMvc.perform(get("/ruleName/list"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("ruleName/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(model().attribute("ruleNames", ruleNames));
     }
 
     @WithMockUser(username = "user", authorities = {"USER"})
     @Test
     public void getRuleNameListAsUSER() throws Exception {
         RuleName ruleName = new RuleName();
-        ruleName.setName("Rule");
-        ruleName.setDescription("description");
+        ruleName.setName("Rule name");
+        ruleName.setDescription("Rule description");
         ruleName.setId(1);
         List<RuleName> ruleNames = new ArrayList<>();
         ruleNames.add(ruleName);
@@ -105,7 +108,8 @@ class RuleNameControllerTest {
         mockMvc.perform(get("/ruleName/update/0"))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/ruleName/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Invalid curve point Id:0"));
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -120,7 +124,8 @@ class RuleNameControllerTest {
         mockMvc.perform(get("/ruleName/update/1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("ruleName/update"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(model().attribute("ruleName", ruleName));
     }
 
     @Test
@@ -136,13 +141,14 @@ class RuleNameControllerTest {
         mockMvc.perform(get("/ruleName/delete/0"))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/ruleName/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Delete successful"));
     }
 
     @Test
     public void postRuleNameValidateWithoutAuthentication() throws Exception {
         mockMvc.perform(post("/ruleName/validate")
-                .with(csrf()))
+                        .with(csrf()))
                 .andExpect(status().is(302));
     }
 
@@ -150,18 +156,19 @@ class RuleNameControllerTest {
     @Test
     public void postRuleNameValidate() throws Exception {
         mockMvc.perform(post("/ruleName/validate")
-                    .param("name", "Rule name")
-                    .param("description", "Rule description")
-                    .with(csrf()))
+                        .param("name", "Rule name")
+                        .param("description", "Rule description")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("ruleName/add"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(model().attribute("message", "Add successful"));
     }
 
     @Test
     public void postRuleNameUpdateWithoutAuthentication() throws Exception {
         mockMvc.perform(post("/ruleName/update/0")
-                .with(csrf()))
+                        .with(csrf()))
                 .andExpect(status().is(302));
     }
 
@@ -169,26 +176,28 @@ class RuleNameControllerTest {
     @Test
     public void postRuleNameUpdate() throws Exception {
         mockMvc.perform(post("/ruleName/update/0")
-                    .param("name", "Rule name")
-                    .param("description", "Rule description")
-                    .with(csrf()))
+                        .param("name", "Rule name")
+                        .param("description", "Rule description")
+                        .with(csrf()))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/ruleName/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Update successful"));
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    public void postRuleNameUpdateNameBlank() throws Exception {
-        this.mockMvc.perform(post("/ruleName/update/0")
-                .param("name", "")
-                .param("description", "description")
-                .param("json", "json")
-                .param("template", "template")
-                .param("sqlStr", "sqlStr")
-                .param("sqlPart", "sqlPart")
-                .with(csrf())
-        ).andExpect(redirectedUrl("/ruleName/list"));
+    public void postRuleNameUpdateWithIllegalArgumentException() throws Exception {
+        doThrow(new IllegalArgumentException("Invalid rule name Id:0")).when(ruleNameService).updateRuleName(any(RuleName.class), eq(0));
+        mockMvc.perform(post("/ruleName/update/0")
+                        .param("name", "rule name")
+                        .param("description", "Rule description")
+                        .param("json", "json")
+                        .with(csrf()))
+                .andExpect(status().is(302))
+                .andExpect(view().name("redirect:/ruleName/list"))
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Invalid rule name Id:0"));
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -196,10 +205,12 @@ class RuleNameControllerTest {
     public void getRuleNameDeleteWithIllegalArgumentException() throws Exception {
         doThrow(new IllegalArgumentException("Invalid rule name Id:0")).when(ruleNameService).deleteRuleName(eq(0));
         mockMvc.perform(get("/ruleName/delete/0")
-                .with(csrf()))
+                        .with(csrf()))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/ruleName/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Invalid rule name Id:0"));
     }
+
 
 }

@@ -111,9 +111,6 @@ public class RatingController {
         } catch (IllegalArgumentException e) {
             LOGGER.error("Error during getting rating " + e.toString());
             attributes.addFlashAttribute("message", e.getMessage());
-        } catch (Exception e) {
-            LOGGER.error("Error during updating rating " + e.toString());
-            attributes.addFlashAttribute("message", "Issue during updating, please retry later");
         }
         return "redirect:/rating/list";
     }
@@ -133,9 +130,6 @@ public class RatingController {
         } catch (IllegalArgumentException e) {
             LOGGER.error("Error during deleting rating " + e.toString());
             attributes.addFlashAttribute("message", e.getMessage());
-        } catch (Exception e) {
-            LOGGER.error("Error during deleting rating " + e.toString());
-            attributes.addFlashAttribute("message", "Issue during deleting, please retry later");
         }
         return "redirect:/rating/list";
     }

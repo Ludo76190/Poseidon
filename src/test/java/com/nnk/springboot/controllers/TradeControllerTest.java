@@ -58,7 +58,8 @@ class TradeControllerTest {
         mockMvc.perform(get("/trade/list"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("trade/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(model().attribute("trades", trades));
     }
 
     @WithMockUser(username = "user", authorities = {"USER"})
@@ -104,6 +105,17 @@ class TradeControllerTest {
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
+    public void getTradeUpdateWithException() throws Exception {
+        when(tradeService.getTradeById(0)).thenThrow(new IllegalArgumentException("Invalid trade Id:0"));
+        mockMvc.perform(get("/trade/update/0"))
+                .andExpect(status().is(302))
+                .andExpect(view().name("redirect:/trade/list"))
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Invalid trade Id:0"));
+    }
+
+    @WithMockUser(username = "admin", authorities = {"ADMIN"})
+    @Test
     public void getTradeUpdate() throws Exception {
         Trade trade = new Trade();
         trade.setTradeId(1);
@@ -132,13 +144,14 @@ class TradeControllerTest {
         mockMvc.perform(get("/trade/delete/0"))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/trade/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Delete successful"));
     }
 
     @Test
     public void postTradeValidateWithoutAuthentication() throws Exception {
         mockMvc.perform(post("/trade/validate")
-                .with(csrf()))
+                        .with(csrf()))
                 .andExpect(status().is(302));
     }
 
@@ -146,23 +159,24 @@ class TradeControllerTest {
     @Test
     public void postTradeValidate() throws Exception {
         mockMvc.perform(post("/trade/validate")
-                    .param("account", "test")
-                    .param("type", "type")
-                    .param("buyQuantity", "10")
-                    .with(csrf()))
+                        .param("account", "test")
+                        .param("type", "type")
+                        .param("buyQuantity", "10")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("trade/add"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(model().attribute("message", "Add successful"));
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
     public void postTradeValidateAccountEmpty() throws Exception {
         mockMvc.perform(post("/trade/validate")
-                .param("account", " ")
-                .param("type", "type")
-                .param("buyQuantity", "10")
-                .with(csrf()))
+                        .param("account", " ")
+                        .param("type", "type")
+                        .param("buyQuantity", "10")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("trade/add"))
                 .andExpect(model().hasErrors())
@@ -173,10 +187,10 @@ class TradeControllerTest {
     @Test
     public void postTradeValidateTypeEmpty() throws Exception {
         mockMvc.perform(post("/trade/validate")
-                .param("account", "account")
-                .param("type", "")
-                .param("buyQuantity", "10")
-                .with(csrf()))
+                        .param("account", "account")
+                        .param("type", "")
+                        .param("buyQuantity", "10")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("trade/add"))
                 .andExpect(model().hasErrors())
@@ -186,7 +200,7 @@ class TradeControllerTest {
     @Test
     public void postTradeUpdateWithoutAuthentication() throws Exception {
         mockMvc.perform(post("/trade/update/0")
-                .with(csrf()))
+                        .with(csrf()))
                 .andExpect(status().is(302));
     }
 
@@ -195,10 +209,10 @@ class TradeControllerTest {
     public void postTradeUpdate() throws Exception {
 
         mockMvc.perform(post("/trade/update/0")
-                .param("account", "test")
-                .param("type", "type")
-                .param("buyQuantity", "10")
-                .with(csrf()))
+                        .param("account", "test")
+                        .param("type", "type")
+                        .param("buyQuantity", "10")
+                        .with(csrf()))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/trade/list"))
                 .andExpect(model().hasNoErrors());
@@ -215,10 +229,10 @@ class TradeControllerTest {
         when(tradeService.getTradeById(1)).thenReturn(trade);
 
         mockMvc.perform(post("/trade/update/1")
-                .param("account", "")
-                .param("type", "type")
-                .param("buyQuantity", "10")
-                .with(csrf()))
+                        .param("account", "")
+                        .param("type", "type")
+                        .param("buyQuantity", "10")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("trade/update"))
                 .andExpect(model().hasErrors())
@@ -236,10 +250,10 @@ class TradeControllerTest {
         when(tradeService.getTradeById(1)).thenReturn(trade);
 
         mockMvc.perform(post("/trade/update/1")
-                .param("account", "account")
-                .param("type", "")
-                .param("buyQuantity", "10")
-                .with(csrf()))
+                        .param("account", "account")
+                        .param("type", "")
+                        .param("buyQuantity", "10")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("trade/update"))
                 .andExpect(model().hasErrors())
@@ -248,39 +262,17 @@ class TradeControllerTest {
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    public void postTradeValidateWithException() throws Exception {
-        mockMvc.perform(post("/trade/validate")
-                .param("account", "test")
-                .param("type", "type")
-                .param("buyQuantity", "10")
-                .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("trade/add"))
-                .andExpect(model().hasNoErrors());
-    }
-
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Test
-    public void postTradeUpdateWithException() throws Exception {
-        this.mockMvc.perform(post("/trade/update/0")
-                .param("account", "test")
-                .param("type", "type")
-                .param("buyQuantity", "10")
-                .with(csrf()))
-                .andExpect(model().hasNoErrors());
-    }
-
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Test
     public void postTradeUpdateWithIllegalArgumentException() throws Exception {
+        doThrow(new IllegalArgumentException("Invalid trade Id:0")).when(tradeService).updateTrade(any(Trade.class), eq(0));
         mockMvc.perform(post("/trade/update/0")
-                .param("account", "test")
-                .param("type", "type")
-                .param("buyQuantity", "10")
-                .with(csrf()))
+                        .param("account", "test")
+                        .param("type", "type")
+                        .param("buyQuantity", "10")
+                        .with(csrf()))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/trade/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Invalid trade Id:0"));
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -288,10 +280,11 @@ class TradeControllerTest {
     public void getTradeDeleteWithIllegalArgumentException() throws Exception {
         doThrow(new IllegalArgumentException("Invalid trade Id:0")).when(tradeService).deleteTrade(eq(0));
         mockMvc.perform(get("/trade/delete/0")
-                .with(csrf()))
+                        .with(csrf()))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/trade/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Invalid trade Id:0"));
     }
 
 

@@ -113,9 +113,6 @@ public class TradeController {
         } catch (IllegalArgumentException e) {
             attributes.addFlashAttribute("message", e.getMessage());
             LOGGER.error("Error during updating trade id " + id + " " + e.toString());
-        } catch (Exception e) {
-            attributes.addFlashAttribute("message", "Issue during updating, please retry later");
-            LOGGER.error("Error during updating trade id " + id + " " + e.toString());
         }
         return "redirect:/trade/list";
     }
@@ -134,9 +131,6 @@ public class TradeController {
             LOGGER.info("Trade id "+ id + " deleted");
         } catch (IllegalArgumentException e) {
             attributes.addFlashAttribute("message", e.getMessage());
-            LOGGER.error("Error during deleting Trade id " + id + " " + e.toString());
-        } catch (Exception e) {
-            attributes.addFlashAttribute("message", "Issue during deleting, please retry later");
             LOGGER.error("Error during deleting Trade id " + id + " " + e.toString());
         }
         return "redirect:/trade/list";

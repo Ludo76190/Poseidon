@@ -10,11 +10,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -103,6 +105,17 @@ class CurveControllerTest {
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
+    public void getCurvePointUpdateWithException() throws Exception {
+        when(curvePointService.getCurvePointById(0)).thenThrow(new IllegalArgumentException("Invalid curve point Id:0"));
+        mockMvc.perform(get("/curvePoint/update/0"))
+                .andExpect(status().is(302))
+                .andExpect(view().name("redirect:/curvePoint/list"))
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Invalid curve point Id:0"));
+    }
+
+    @WithMockUser(username = "admin", authorities = {"ADMIN"})
+    @Test
     public void getCurvePointUpdate() throws Exception {
         CurvePoint curvePoint = new CurvePoint();
         curvePoint.setCurveId(1);
@@ -114,7 +127,8 @@ class CurveControllerTest {
         mockMvc.perform(get("/curvePoint/update/1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("curvePoint/update"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(model().attribute("curvePoint", curvePoint));
     }
 
     @Test
@@ -130,13 +144,14 @@ class CurveControllerTest {
         mockMvc.perform(get("/curvePoint/delete/0"))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/curvePoint/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Delete successful"));
     }
 
     @Test
     public void postCurvePointValidateWithoutAuthentication() throws Exception {
         mockMvc.perform(post("/curvePoint/validate")
-                .with(csrf()))
+                        .with(csrf()))
                 .andExpect(status().is(302));
     }
 
@@ -144,23 +159,24 @@ class CurveControllerTest {
     @Test
     public void postCurvePointValidate() throws Exception {
         mockMvc.perform(post("/curvePoint/validate")
-                    .param("curveId", "10")
-                    .param("term", "10")
-                    .param("value", "10")
-                    .with(csrf()))
+                        .param("curveId", "10")
+                        .param("term", "10")
+                        .param("value", "10")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("curvePoint/add"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(model().attribute("message", "Add successful"));
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
     public void postCurvePointValidateCurveIdNull() throws Exception {
         mockMvc.perform(post("/curvePoint/validate")
-                    .param("curveId", " ")
-                    .param("term", "10")
-                    .param("value", "10")
-                    .with(csrf()))
+                        .param("curveId", " ")
+                        .param("term", "10")
+                        .param("value", "10")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("curvePoint/add"))
                 .andExpect(model().hasErrors())
@@ -170,7 +186,7 @@ class CurveControllerTest {
     @Test
     public void postCurvePointUpdateWithoutAuthentication() throws Exception {
         mockMvc.perform(post("/curvePoint/update/0")
-                .with(csrf()))
+                        .with(csrf()))
                 .andExpect(status().is(302));
     }
 
@@ -178,23 +194,24 @@ class CurveControllerTest {
     @Test
     public void postCurvePointUpdate() throws Exception {
         mockMvc.perform(post("/curvePoint/update/0")
-                    .param("curveId", "10")
-                    .param("term", "10")
-                    .param("value", "10")
-                    .with(csrf()))
+                        .param("curveId", "10")
+                        .param("term", "10")
+                        .param("value", "10")
+                        .with(csrf()))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/curvePoint/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Update successful"));
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
     public void postCurvePointUpdateCurveIdNull() throws Exception {
         mockMvc.perform(post("/curvePoint/update/0")
-                    .param("curveId", "")
-                    .param("term", "10")
-                    .param("value", "10")
-                    .with(csrf()))
+                        .param("curveId", "")
+                        .param("term", "10")
+                        .param("value", "10")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("curvePoint/update"))
                 .andExpect(model().hasErrors())
@@ -203,29 +220,8 @@ class CurveControllerTest {
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    public void postCurvePointValidateWithException() throws Exception {
-        this.mockMvc.perform(post("/curvePoint/validate")
-                .param("curveId", "90")
-                .param("term", "A")
-                .param("value", "B")
-                .with(csrf())
-        ).andExpect(model().hasErrors());
-    }
-
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Test
-    public void postCurvePointUpdateWithException() throws Exception {
-        this.mockMvc.perform(post("/curvePoint/update/0")
-                .param("curveId", "91")
-                .param("term", "12.0")
-                .param("value", "A")
-                .with(csrf())
-        ).andExpect(model().hasErrors());
-    }
-
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Test
     public void postCurvePointUpdateWithIllegalArgumentException() throws Exception {
+        doThrow(new IllegalArgumentException("Invalid curve point Id:0")).when(curvePointService).updateCurvePoint(any(CurvePoint.class), eq(0));
         mockMvc.perform(post("/curvePoint/update/0")
                         .param("curveId", "12")
                         .param("term", "10")
@@ -233,18 +229,8 @@ class CurveControllerTest {
                         .with(csrf()))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/curvePoint/list"))
-                .andExpect(model().hasNoErrors());
-    }
-
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Test
-    public void getCurvePointDeleteWithIllegalArgumentException() throws Exception {
-        doThrow(new IllegalArgumentException("Invalid curve point Id:0")).when(curvePointService).deleteCurvePoint(eq(0));
-        mockMvc.perform(get("/curvePoint/delete/0")
-                .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/curvePoint/list"))
-                .andExpect(model().hasNoErrors());
+                .andExpect(model().hasNoErrors())
+                .andExpect(flash().attribute("message", "Invalid curve point Id:0"));
     }
 
 }
