@@ -14,8 +14,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -45,7 +43,7 @@ class BidListControllerTest {
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    public void getBidListList() throws Exception {
+    public void getBidListListWithAuthentication() throws Exception {
         BidList bidList = new BidList();
         bidList.setBidListId(1);
         bidList.setAccount("test");
@@ -64,7 +62,7 @@ class BidListControllerTest {
 
     @WithMockUser(username = "user", authorities = {"USER"})
     @Test
-    public void getBidListListConnectedAsUser() throws Exception {
+    public void GetBidListListConnectedAsUser() throws Exception {
         BidList bidList = new BidList();
         bidList.setBidListId(1);
         bidList.setAccount("test");
@@ -78,8 +76,7 @@ class BidListControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("bidList/list"))
                 .andExpect(model().hasNoErrors())
-                .andExpect(model().attribute("bidLists", bidLists))
-                .andExpect(content().string(not(containsString("&nbsp;|&nbsp;<a href=\"/user/list\">User</a>"))));
+                .andExpect(model().attribute("bidLists", bidLists));
     }
 
     @Test
@@ -90,7 +87,7 @@ class BidListControllerTest {
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    public void getBidListAdd() throws Exception {
+    public void getBidListAddWithAuthentication() throws Exception {
         mockMvc.perform(get("/bidList/add"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("bidList/add"))
