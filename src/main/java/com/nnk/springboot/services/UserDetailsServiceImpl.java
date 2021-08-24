@@ -36,6 +36,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return buildUserForAuthentication(user, grantedAuthorities);
     }
 
+    /**
+     * Build of the User details
+     * @param user The user
+     * @param authorities authorities of the user
+     * @return User details
+     */
     private UserDetails buildUserForAuthentication(User user, Set<GrantedAuthority> authorities) {
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
                 true, true, true, true, authorities);

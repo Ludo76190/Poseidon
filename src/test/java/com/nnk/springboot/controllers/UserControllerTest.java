@@ -1,6 +1,6 @@
 package com.nnk.springboot.controllers;
 
-import com.nnk.springboot.configuration.exception.AlreadyExistException;
+import com.nnk.springboot.config.exception.AlreadyExistException;
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.services.UserDetailsServiceImpl;
 import com.nnk.springboot.services.UserService;
@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;

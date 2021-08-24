@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.List;
 
+/**
+ * Implementation of interface TradeService
+ */
 @Service
 public class TradeServiceImpl implements TradeService {
 
@@ -18,6 +21,10 @@ public class TradeServiceImpl implements TradeService {
     @Autowired
     private TradeRepository tradeRepository;
 
+    /**
+     * Creates Trade.
+     * @param trade the Trade to create
+     */
     @Override
     public void createTrade(Trade trade) {
         trade.setCreationDate(new Timestamp(System.currentTimeMillis()));
@@ -25,6 +32,11 @@ public class TradeServiceImpl implements TradeService {
         logger.info("Success create Trade");
     }
 
+    /**
+     * Updates a Trade
+     * @param trade the trade to update
+     * @param id id of the trade to update
+     */
     @Override
     public void updateTrade(Trade trade, Integer id) {
 
@@ -37,16 +49,29 @@ public class TradeServiceImpl implements TradeService {
         logger.info("Success update Trade");
     }
 
+    /**
+     * Get all Trade
+     * @return all Trade
+     */
     @Override
     public List<Trade> getAllTrade() {
         return tradeRepository.findAll();
     }
 
+    /**
+     * returns Trade from an id
+     * @param id the trade's id
+     * @return the trade
+     */
     @Override
     public Trade getTradeById(Integer id) {
         return tradeRepository.getOne(id);
     }
 
+    /**
+     * delete trade from an id
+     * @param id the trade's id
+     */
     @Override
     public void deleteTrade(Integer id) {
         tradeRepository.deleteById(id);

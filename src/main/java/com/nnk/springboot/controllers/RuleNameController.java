@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 
 /**
- * To manage CRUD operations for RuleName
+ * Controller for RuleName CRUD operations
  */
 @Controller
 public class RuleNameController {
@@ -25,11 +25,12 @@ public class RuleNameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(RuleNameController.class);
 
     /**
-     * To return rule name page
-     * @param model filled with list of all rule name
-     * @return rule name page
+     * Return RuleName page
+     *
+     * @param model of RuleName
+     * @return the page of RuleName
      */
-    @RequestMapping("/ruleName/list")
+    @GetMapping("/ruleName/list")
     public String home(Model model)
     {
         model.addAttribute("ruleNames", ruleNameService.getAllRuleName());
@@ -38,8 +39,8 @@ public class RuleNameController {
 
     /**
      * To display the add form
-     * @param model initialised with a new rule name
-     * @return the add form
+     * @param model initialised with a new RuleName
+     * @return the add RuleName page
      */
     @GetMapping("/ruleName/add")
     public String addRuleForm(Model model) {
@@ -48,89 +49,77 @@ public class RuleNameController {
     }
 
     /**
-     * To create a rule name
-     * @param ruleName the rule name entered
-     * @param result the eventual errors in the form
-     * @param model model of the rule name to be created, initialised with a new rule name if success
-     * @return The add form, either with binding errors or with a new rule name
+     * Create a curve point
+     * @param ruleName RuleName to create
+     * @param result contains errors if ruleName is not valid
+     * @param model list of RuleName
+     * @return list of RuleName if valid or stay in add page
      */
     @PostMapping("/ruleName/validate")
-    public String validate(@ModelAttribute @Valid RuleName ruleName, BindingResult result, Model model) {
+    public String validate(@Valid RuleName ruleName, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "ruleName/add";
         }
-        try {
-            ruleNameService.createRuleName(ruleName);
-            LOGGER.info("Rule Name added");
-            model.addAttribute("ruleName", new RuleName());
-            model.addAttribute("message", "Add successful");
-        } catch (Exception e) {
-            LOGGER.error("Error during adding rule name " + e.toString());
-            model.addAttribute("message", "Issue during creating rule name, please retry later");
-        }
-        return "ruleName/add";
+        ruleNameService.createRuleName(ruleName);
+        LOGGER.info("Rule Name added");
+        model.addAttribute("ruleName", ruleNameService.getAllRuleName());
+        return "redirect:ruleName/list";
     }
 
     /**
-     * To display the update form initialised with the data of the rule name to be updated
-     * @param id id of the rule name to be updated
-     * @param model model with the rule name to be updated
-     * @param attributes Message to be displayed on redirect page
-     * @return update form if success, rule name list otherwise
+     * Return the completed updated page
+     *
+     * @param id RuleName's id to update
+     * @param model RuleName to update
+     * @return update RuleName page
      */
     @GetMapping("/ruleName/update/{id}")
-    public String showUpdateForm(@PathVariable("id") Integer id, Model model, RedirectAttributes attributes) {
+    public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         try {
-            model.addAttribute("ruleName",ruleNameService.getRuleNameById(id));
+            RuleName ruleName = ruleNameService.getRuleNameById(id);
+            model.addAttribute("ruleName",ruleName);
             return "ruleName/update";
         } catch (IllegalArgumentException e) {
-            LOGGER.error("Error during getting rule name " + e.toString());
-            attributes.addFlashAttribute("message", e.getMessage());
+            LOGGER.error("Error during getting rule name " + e);
+            return "redirect:/ruleName/list";
         }
-        return "redirect:/ruleName/list";
     }
 
     /**
-     * To update a rule name 
-     * @param id id of the rule name to be updated
-     * @param ruleName Updated data for the ruleName
-     * @param result the eventual errors in the form
-     * @param attributes Message to be displayed on redirect page
-     * @return rule name list if success, update form with errors otherwise
+     * Update a CurvePoint
+     *
+     * @param id         RuleName's id to update
+     * @param ruleName New CurvePoint with new values
+     * @param result     contains errors of ruleName if not valid
+     * @param model      list of RuleName
+     * @return list of RuleName page
      */
     @PostMapping("/ruleName/update/{id}")
-    public String updateRuleName(@PathVariable("id") Integer id, @ModelAttribute @Valid RuleName ruleName,
-                             BindingResult result, RedirectAttributes attributes) {
+    public String updateRuleName(@PathVariable("id") Integer id, @Valid RuleName ruleName,
+                                 BindingResult result, Model model) {
         if (result.hasErrors()) {
-            ruleName.setId(id);
             return "ruleName/update";
         }
-        try {
-            ruleNameService.updateRuleName(ruleName, id);
-            LOGGER.info("Rule name id " + id + "updated");
-            attributes.addFlashAttribute("message", "Update successful");
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Error during updating rule name " + e.toString());
-            attributes.addFlashAttribute("message", e.getMessage());
-        }
+        ruleNameService.updateRuleName(ruleName, id);
+        model.addAttribute("ruleNameList",ruleNameService.getAllRuleName());
+        LOGGER.info("Rule name id " + id + "updated");
         return "redirect:/ruleName/list";
     }
 
     /**
-     * To delete a rule name
-     * @param id id of the rule name to be updated
-     * @param attributes Message to be displayed on redirect page
-     * @return rule name list page
+     * Delete RuleName by id
+     *
+     * @param id    RuleName's id to delete
+     * @param model List of RuleName
+     * @return RuleName's list page
      */
     @GetMapping("/ruleName/delete/{id}")
-    public String deleteRuleName(@PathVariable("id") Integer id, RedirectAttributes attributes) {
+    public String deleteRuleName(@PathVariable("id") Integer id, Model model) {
         try {
             ruleNameService.deleteRuleName(id);
             LOGGER.info("Rule name id " + id + "deleted");
-            attributes.addFlashAttribute("message", "Delete successful");
         } catch (IllegalArgumentException e) {
             LOGGER.error("Error during deleting rule name " + e.toString());
-            attributes.addFlashAttribute("message", e.getMessage());
         }
         return "redirect:/ruleName/list";
     }

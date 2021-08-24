@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Implementation of interface RuleNameService
+ */
 @Service
 public class RuleNameServiceImpl implements RuleNameService{
 
@@ -17,12 +20,21 @@ public class RuleNameServiceImpl implements RuleNameService{
     @Autowired
     private RuleNameRepository ruleNameRepository;
 
+    /**
+     * Creates RuleName.
+     * @param ruleName the RuleName to create
+     */
     @Override
     public void createRuleName(RuleName ruleName) {
         ruleNameRepository.save(ruleName);
         logger.info("Success create RuleName");
     }
 
+    /**
+     * Updates a RuleName
+     * @param ruleName the bidList to update
+     * @param id id of the ruleName to update
+     */
     @Override
     public void updateRuleName(RuleName ruleName, Integer id) {
         RuleName updatedRuleName = getRuleNameById(id);
@@ -36,16 +48,29 @@ public class RuleNameServiceImpl implements RuleNameService{
         logger.info("Success update RuleName");
     }
 
+    /**
+     * Get all RuleName
+     * @return all RuleName
+     */
     @Override
     public List<RuleName> getAllRuleName() {
         return ruleNameRepository.findAll();
     }
 
+    /**
+     * returns RuleName from an id
+     * @param id the ruleName's id
+     * @return the ruleName
+     */
     @Override
     public RuleName getRuleNameById(Integer id) {
         return ruleNameRepository.getOne(id);
     }
 
+    /**
+     * delete ruleName from an id
+     * @param id the ruleName's id
+     */
     @Override
     public void deleteRuleName(Integer id) {
         ruleNameRepository.deleteById(id);

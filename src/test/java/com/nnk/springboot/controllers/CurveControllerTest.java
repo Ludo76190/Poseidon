@@ -110,8 +110,7 @@ class CurveControllerTest {
         mockMvc.perform(get("/curvePoint/update/0"))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/curvePoint/list"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(flash().attribute("message", "Invalid curve point Id:0"));
+                .andExpect(model().hasNoErrors());
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -144,8 +143,7 @@ class CurveControllerTest {
         mockMvc.perform(get("/curvePoint/delete/0"))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/curvePoint/list"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(flash().attribute("message", "Delete successful"));
+                .andExpect(model().hasNoErrors());
     }
 
     @Test
@@ -163,10 +161,9 @@ class CurveControllerTest {
                         .param("term", "10")
                         .param("value", "10")
                         .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("curvePoint/add"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(model().attribute("message", "Add successful"));
+                .andExpect(status().is(302))
+                .andExpect(view().name("redirect:/curvePoint/list"))
+                .andExpect(model().hasNoErrors());
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -200,8 +197,7 @@ class CurveControllerTest {
                         .with(csrf()))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/curvePoint/list"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(flash().attribute("message", "Update successful"));
+                .andExpect(model().hasNoErrors());
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -216,21 +212,6 @@ class CurveControllerTest {
                 .andExpect(view().name("curvePoint/update"))
                 .andExpect(model().hasErrors())
                 .andExpect(model().attributeHasFieldErrorCode("curvePoint", "curveId", "NotNull"));
-    }
-
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Test
-    public void postCurvePointUpdateWithIllegalArgumentException() throws Exception {
-        doThrow(new IllegalArgumentException("Invalid curve point Id:0")).when(curvePointService).updateCurvePoint(any(CurvePoint.class), eq(0));
-        mockMvc.perform(post("/curvePoint/update/0")
-                        .param("curveId", "12")
-                        .param("term", "10")
-                        .param("value", "10")
-                        .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/curvePoint/list"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(flash().attribute("message", "Invalid curve point Id:0"));
     }
 
 }

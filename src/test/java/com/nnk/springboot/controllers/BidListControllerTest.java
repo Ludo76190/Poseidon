@@ -10,11 +10,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -107,53 +105,7 @@ class BidListControllerTest {
         mockMvc.perform(get("/bidList/update/0"))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/bidList/list"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(flash().attribute("message", "Invalid bid list Id:0"));
-    }
-
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Test
-    public void postBidListValidateWithException() throws Exception {
-        doThrow(new SQLException()).when(bidListService).createBidList(any(BidList.class));
-        mockMvc.perform(post("/bidList/validate")
-                        .param("account", "test")
-                        .param("type", "type")
-                        .param("bidQuantity", "10")
-                        .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("bidList/add"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(model().attribute("message", "Issue during creating, please retry later"));
-    }
-
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Test
-    public void postBidListUpdateWithException() throws Exception {
-        doThrow(new Exception()).when(bidListService).updateBidList(any(BidList.class), eq(0));
-        mockMvc.perform(post("/bidList/update/0")
-                        .param("account", "test")
-                        .param("type", "type")
-                        .param("bidQuantity", "10")
-                        .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/bidList/list"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(flash().attribute("message", "Issue during updating, please retry later"));
-    }
-
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Test
-    public void postBidListUpdateWithIllegalArgumentException() throws Exception {
-        doThrow(new IllegalArgumentException("Invalid bid list Id:0")).when(bidListService).updateBidList(any(BidList.class), eq(0));
-        mockMvc.perform(post("/bidList/update/0")
-                        .param("account", "test")
-                        .param("type", "type")
-                        .param("bidQuantity", "10")
-                        .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/bidList/list"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(flash().attribute("message", "Invalid bid list Id:0"));
+                .andExpect(model().hasNoErrors());
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -164,8 +116,7 @@ class BidListControllerTest {
                         .with(csrf()))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/bidList/list"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(flash().attribute("message", "Invalid bid list Id:0"));
+                .andExpect(model().hasNoErrors());
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -198,8 +149,7 @@ class BidListControllerTest {
         mockMvc.perform(get("/bidList/delete/0"))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/bidList/list"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(flash().attribute("message", "Delete successful"));
+                .andExpect(model().hasNoErrors());
     }
 
     @Test
@@ -217,10 +167,9 @@ class BidListControllerTest {
                         .param("type", "type")
                         .param("bidQuantity", "10")
                         .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("bidList/add"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(model().attribute("message", "Add successful"));
+                .andExpect(status().is(302))
+                .andExpect(view().name("redirect:/bidList/list"))
+                .andExpect(model().hasNoErrors());
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -313,6 +262,5 @@ class BidListControllerTest {
                 .andExpect(model().hasErrors())
                 .andExpect(model().attributeHasFieldErrorCode("bidList", "type", "NotBlank"));
     }
-
 
 }

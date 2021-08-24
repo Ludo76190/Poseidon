@@ -10,7 +10,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,8 +109,7 @@ class TradeControllerTest {
         mockMvc.perform(get("/trade/update/0"))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/trade/list"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(flash().attribute("message", "Invalid trade Id:0"));
+                .andExpect(model().hasNoErrors());
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -144,8 +142,7 @@ class TradeControllerTest {
         mockMvc.perform(get("/trade/delete/0"))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/trade/list"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(flash().attribute("message", "Delete successful"));
+                .andExpect(model().hasNoErrors());
     }
 
     @Test
@@ -163,10 +160,9 @@ class TradeControllerTest {
                         .param("type", "type")
                         .param("buyQuantity", "10")
                         .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("trade/add"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(model().attribute("message", "Add successful"));
+                .andExpect(status().is(302))
+                .andExpect(view().name("redirect:/trade/list"))
+                .andExpect(model().hasNoErrors());
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -262,30 +258,13 @@ class TradeControllerTest {
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     @Test
-    public void postTradeUpdateWithIllegalArgumentException() throws Exception {
-        doThrow(new IllegalArgumentException("Invalid trade Id:0")).when(tradeService).updateTrade(any(Trade.class), eq(0));
-        mockMvc.perform(post("/trade/update/0")
-                        .param("account", "test")
-                        .param("type", "type")
-                        .param("buyQuantity", "10")
-                        .with(csrf()))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/trade/list"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(flash().attribute("message", "Invalid trade Id:0"));
-    }
-
-    @WithMockUser(username = "admin", authorities = {"ADMIN"})
-    @Test
     public void getTradeDeleteWithIllegalArgumentException() throws Exception {
         doThrow(new IllegalArgumentException("Invalid trade Id:0")).when(tradeService).deleteTrade(eq(0));
         mockMvc.perform(get("/trade/delete/0")
                         .with(csrf()))
                 .andExpect(status().is(302))
                 .andExpect(view().name("redirect:/trade/list"))
-                .andExpect(model().hasNoErrors())
-                .andExpect(flash().attribute("message", "Invalid trade Id:0"));
+                .andExpect(model().hasNoErrors());
     }
-
 
 }

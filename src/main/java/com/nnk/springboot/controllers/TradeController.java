@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 
 /**
- * To manage CRUD operations for Trade
+ * Controller for Trade CRUD operations
  */
 @Controller
 public class TradeController {
@@ -25,11 +25,12 @@ public class TradeController {
     private static final Logger LOGGER = LoggerFactory.getLogger(TradeController.class);
 
     /**
-     * To return trade page
-     * @param model filled with list of all trade
-     * @return trade page
+     * Return Trade page
+     *
+     * @param model of Trade
+     * @return the page of Trade
      */
-    @RequestMapping("/trade/list")
+    @GetMapping("/trade/list")
     public String home(Model model)
     {
         model.addAttribute("trades", tradeService.getAllTrade());
@@ -38,99 +39,87 @@ public class TradeController {
 
     /**
      * To display the add form
-     * @param model initialised with a new trade
-     * @return the add form
+     * @param model initialised with a new Trade
+     * @return the add Trade page
      */
     @GetMapping("/trade/add")
-    public String addUser(Model model) {
+    public String addTrade(Model model) {
         model.addAttribute("trade", new Trade());
         return "trade/add";
     }
 
     /**
-     * To create a trade
-     * @param trade the trade entered
-     * @param result the eventual errors in the form
-     * @param model model of the trade to be created, initialised with a new trade if success
-     * @return The add form, either with binding errors or with a new trade
+     * Create a curve point
+     * @param trade Trade to create
+     * @param result contains errors if Trade is not valid
+     * @param model list of Trade
+     * @return list of Trade if valid or stay in add page
      */
     @PostMapping("/trade/validate")
-    public String validate(@ModelAttribute @Valid Trade trade, BindingResult result, Model model) {
+    public String validate(@Valid Trade trade, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "trade/add";
         }
-        try {
-            tradeService.createTrade(trade);
-            model.addAttribute("message", "Add successful");
-            model.addAttribute("trade", new Trade());
-            LOGGER.info("Trade added");
-        } catch (Exception e) {
-            LOGGER.error("Error during adding Trade " + e.toString());
-            model.addAttribute("message", "Issue during creating trade, please retry later");
-        }
-        return "trade/add";
+        tradeService.createTrade(trade);
+        LOGGER.info("Trade added");
+        model.addAttribute("tradeList",tradeService.getAllTrade());
+        return "redirect:/trade/list";
     }
 
     /**
-     * To display the update form initialised with the data of the trade to be updated
-     * @param id id of the trade to be updated
-     * @param model model with the trade to be updated
-     * @param attributes Message to be displayed on redirect page
-     * @return update form if success, trade list otherwise
+     * Return the completed updated page
+     *
+     * @param id Trade's id to update
+     * @param model Trade to update
+     * @return update Trade page
      */
     @GetMapping("/trade/update/{id}")
-    public String showUpdateForm(@PathVariable("id") Integer id, Model model, RedirectAttributes attributes) {
+    public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         try {
-            model.addAttribute("trade", tradeService.getTradeById(id));
+            Trade trade = tradeService.getTradeById(id);
+            model.addAttribute("trade", trade);
             return "trade/update";
         } catch (IllegalArgumentException e) {
             LOGGER.error("Error during getting Trade " + e.toString());
-            attributes.addFlashAttribute("message", e.getMessage());
             return "redirect:/trade/list";
         }
 
     }
 
     /**
-     * To update a trade 
-     * @param id id of the trade to be updated
-     * @param trade Updated data for the trade
-     * @param result the eventual errors in the form
-     * @param attributes Message to be displayed on redirect page
-     * @return trade list if success, update form with errors otherwise
+     * Update a Trade
+     *
+     * @param id         Trade's id to update
+     * @param trade      New Trade with new values
+     * @param result     contains errors of trade if not valid
+     * @param model      list of Trade
+     * @return list of Trade page
      */
     @PostMapping("/trade/update/{id}")
-    public String updateTrade(@PathVariable("id") Integer id, @ModelAttribute @Valid Trade trade,
-                             BindingResult result, Model model, RedirectAttributes attributes) {
+    public String updateTrade(@PathVariable("id") Integer id, @Valid Trade trade,
+                              BindingResult result, Model model) {
         if (result.hasErrors()) {
-            trade.setTradeId(id);
             return "trade/update";
         }
-        try {
-            tradeService.updateTrade(trade, id);
-            attributes.addFlashAttribute("message", "Update successful");
-            LOGGER.info("Trade id " + id + " updated");
-        } catch (IllegalArgumentException e) {
-            attributes.addFlashAttribute("message", e.getMessage());
-            LOGGER.error("Error during updating trade id " + id + " " + e.toString());
-        }
+        tradeService.updateTrade(trade, id);
+        model.addAttribute("tradeList",tradeService.getAllTrade());
+        LOGGER.info("Trade id " + id + " updated");
         return "redirect:/trade/list";
     }
 
     /**
-     * To delete a trade
-     * @param id id of the trade to be updated
-     * @param attributes Message to be displayed on redirect page
-     * @return trade list page
+     * Delete Trade by id
+     *
+     * @param id    Trade's id to delete
+     * @param model List of Trade
+     * @return Trade's list page
      */
     @GetMapping("/trade/delete/{id}")
-    public String deleteTrade(@PathVariable("id") Integer id, RedirectAttributes attributes) {
+    public String deleteTrade(@PathVariable("id") Integer id, Model model) {
         try {
             tradeService.deleteTrade(id);
-            attributes.addFlashAttribute("message", "Delete successful");
             LOGGER.info("Trade id "+ id + " deleted");
         } catch (IllegalArgumentException e) {
-            attributes.addFlashAttribute("message", e.getMessage());
             LOGGER.error("Error during deleting Trade id " + id + " " + e.toString());
         }
         return "redirect:/trade/list";

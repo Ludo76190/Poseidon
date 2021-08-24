@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.List;
 
+/**
+ * Implementation of interface CurvePointService
+ */
+
 @Service
 public class CurvePointServiceImpl implements CurvePointService{
 
@@ -18,6 +22,10 @@ public class CurvePointServiceImpl implements CurvePointService{
     @Autowired
     private CurvePointRepository curvePointRepository;
 
+    /**
+     * Creates CurvePoint.
+     * @param curvePoint the BidList to be created
+     */
     @Override
     public void createCurvePoint(CurvePoint curvePoint) {
         curvePoint.setCreationDate(new Timestamp(System.currentTimeMillis()));
@@ -25,6 +33,11 @@ public class CurvePointServiceImpl implements CurvePointService{
         logger.info("Success create CurvePoint");
     }
 
+    /**
+     * Updates a CurvePont
+     * @param curvePoint the bidList to update
+     * @param id id of the curvePoint to update
+     */
     @Override
     public void updateCurvePoint(CurvePoint curvePoint, Integer id) {
 
@@ -36,16 +49,29 @@ public class CurvePointServiceImpl implements CurvePointService{
         logger.info("Success update CurvePoint");
     }
 
+    /**
+     * Get all CurvePoint
+     * @return all CurvePoint
+     */
     @Override
     public List<CurvePoint> getAllCurvePoint() {
         return curvePointRepository.findAll();
     }
 
+    /**
+     * returns CurvePoint from an id
+     * @param id the CurvePoint's id
+     * @return the CurvePoint
+     */
     @Override
     public CurvePoint getCurvePointById(Integer id) {
         return curvePointRepository.getOne(id);
     }
 
+    /**
+     * delete CurvePoint from an id
+     * @param id the CurvePoint's id
+     */
     @Override
     public void deleteCurvePoint(Integer id) {
         curvePointRepository.deleteById(id);

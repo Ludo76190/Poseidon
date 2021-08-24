@@ -1,6 +1,6 @@
 package com.nnk.springboot.controllers;
 
-import com.nnk.springboot.configuration.exception.AlreadyExistException;
+import com.nnk.springboot.config.exception.AlreadyExistException;
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.services.UserService;
 import org.slf4j.Logger;

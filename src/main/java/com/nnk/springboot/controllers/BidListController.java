@@ -1,6 +1,5 @@
 package com.nnk.springboot.controllers;
 
-import com.nnk.springboot.configuration.exception.AlreadyExistException;
 import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.services.BidListService;
 import org.slf4j.Logger;
@@ -9,11 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
 
+/**
+ * Controller for BidList CRUD operations
+ */
 @Controller
 public class BidListController {
 
@@ -22,84 +26,101 @@ public class BidListController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BidListController.class);
 
-    @RequestMapping("/bidList/list")
+    /**
+     * Return bidList page
+     *
+     * @param model list of BidList
+     * @return the page of bidList list
+     */
+    @GetMapping("/bidList/list")
     public String home(Model model) {
         model.addAttribute("bidLists", bidListService.getAllBidList());
         return "bidList/list";
     }
 
+    /**
+     * Return the add bidList page
+     *
+     * @param bid bidList to add
+     * @return add bidList page
+     */
     @GetMapping("/bidList/add")
-    public String addBidForm(Model model) {
-        model.addAttribute("bidList", new BidList());
+    public String addBidForm(BidList bid) {
         return "bidList/add";
     }
 
+    /**
+     * Create a bidList if valid
+     *
+     * @param bid    bidList to create
+     * @param result contains errors if bidList is not valid
+     * @param model  list of BidList
+     * @return list of BidList if valid or stay in add page
+     */
     @PostMapping("/bidList/validate")
-    public String validate(@ModelAttribute("bidList") @Valid BidList bid, BindingResult result, Model model) {
-        if (!result.hasErrors()) {
-            try {
-                bidListService.createBidList(bid);
-                LOGGER.info("BidList added");
-                model.addAttribute("bidList", new BidList());
-                model.addAttribute("message", "Add successful");
-            } catch (AlreadyExistException e) {
-                model.addAttribute("message", e.getMessage());
-            }
-            catch (Exception e) {
-                LOGGER.error("Error during adding bind list " + e);
-                model.addAttribute("message", "Issue during creating, please retry later");
-            }
+    public String validate(@Valid BidList bid, BindingResult result, Model model) throws Exception {
+        if (result.hasErrors()) {
+            return "bidList/add";
         }
-        return "bidList/add";
+        bidListService.createBidList(bid);
+        model.addAttribute("bidLists", bidListService.getAllBidList());
+        return "redirect:/bidList/list";
+
     }
 
+    /**
+     * Return the completed updated page
+     *
+     * @param id    bidList's id to update
+     * @param model bidList to Update
+     * @return update BidList page
+     */
     @GetMapping("/bidList/update/{id}")
-    public String showUpdateForm(@PathVariable("id") Integer id, Model model, RedirectAttributes attributes) {
-
+    public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         try {
             BidList bidList = bidListService.getBidListById(id);
             model.addAttribute("bidList", bidList);
             return "bidList/update";
         } catch (IllegalArgumentException e) {
             LOGGER.error("Error during getting BindList " + e.toString());
-            attributes.addFlashAttribute("message", e.getMessage());
             return "redirect:/bidList/list";
         }
     }
 
+    /**
+     * Update a bidList
+     *
+     * @param id      bidlist's id to update
+     * @param bidList new bidlist with new values
+     * @param result  contains errors of bidlist if not valid
+     * @param model   list of BidList
+     * @return list of BidList page
+     */
     @PostMapping("/bidList/update/{id}")
-    public String updateBid(@PathVariable("id") Integer id, @ModelAttribute("bidList") @Valid BidList bidList,
-                             BindingResult result, RedirectAttributes attributes) {
+    public String updateBid(@PathVariable("id") Integer id, @Valid BidList bidList,
+                            BindingResult result, Model model) throws Exception {
         if (result.hasErrors()) {
-            bidList.setBidListId(id);
             return "bidList/update";
         }
-        try {
-            bidListService.updateBidList(bidList, id);
-            LOGGER.info("BidList id " + id + " updated");
-            attributes.addFlashAttribute("message", "Update successful");
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Error during updating bind list " + e.toString());
-            attributes.addFlashAttribute("message", e.getMessage());
-        } catch (Exception e) {
-            LOGGER.error("Error during updating bind list " + e.toString());
-            attributes.addFlashAttribute("message", "Issue during updating, please retry later");
-        }
+        bidListService.updateBidList(bidList, id);
+        model.addAttribute("bidLists", bidListService.getAllBidList());
         return "redirect:/bidList/list";
     }
 
+    /**
+     * Delete bidList by Id
+     *
+     * @param id    bidList's id to delete
+     * @param model List of bidList
+     * @return BidList's List page
+     */
     @GetMapping("/bidList/delete/{id}")
-    public String deleteBid(@PathVariable("id") Integer id, RedirectAttributes attributes) {
+    public String deleteBid(@PathVariable("id") Integer id, Model model) {
         try {
             bidListService.deleteBidList(id);
             LOGGER.info("BidList id " + id + " deleted");
-            attributes.addFlashAttribute("message", "Delete successful");
         } catch (IllegalArgumentException e) {
             LOGGER.error("Error during deleting bind list id " + id + " " + e.toString());
-            attributes.addFlashAttribute("message", e.getMessage());
-        } catch (Exception e) {
-            LOGGER.error("Error during deleting bind list " + id + " "  + e.toString());
-            attributes.addFlashAttribute("message", "Issue during deleting, please retry later");
         }
         return "redirect:/bidList/list";
     }
