@@ -44,6 +44,10 @@ public class BidListServiceImpl implements BidListService{
      */
     @Override
     public void updateBidList(BidList bidList, Integer id) throws Exception {
+        if (bidListRepository.findBidListByAccount(bidList.getAccount()) != null) {
+            logger.error("bidList "+ bidList.getAccount() +" already exist");
+            throw new AlreadyExistException("BidList " + bidList.getAccount() + " already exists.");
+        }
         BidList updatedBidList = getBidListById(id);
         updatedBidList.setAccount(bidList.getAccount());
         updatedBidList.setType(bidList.getType());

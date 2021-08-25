@@ -1,11 +1,10 @@
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\repositories\UserRepository.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\controllers\HomeController.java
-C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\config\security\SpringSecurityConfig.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\Application.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\controllers\RuleNameController.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\services\RatingService.java
-C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\config\security\myAuthenticationSuccessHandler.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\services\RuleNameServiceImpl.java
+C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\security\SpringSecurityConfig.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\services\UserServiceImpl.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\domain\CurvePoint.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\services\TradeServiceImpl.java
@@ -34,6 +33,7 @@ C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\sprin
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\repositories\RatingRepository.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\repositories\RuleNameRepository.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\domain\User.java
+C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\security\myAuthenticationSuccessHandler.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\services\TradeService.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\repositories\TradeRepository.java
 C:\SoftwareAcademy\P7_Dev_Allegaert_Ludovic\Poseidon\src\main\java\com\nnk\springboot\services\RuleNameService.java

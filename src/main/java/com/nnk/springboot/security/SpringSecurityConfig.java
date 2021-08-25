@@ -37,7 +37,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * Define which URL security.
      *
-     * @param http HttpSecurity to configure
+     * @param httpSecurity HttpSecurity to configure
      * @throws Exception if an error occurs
      */
     @Override

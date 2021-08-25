@@ -1,6 +1,8 @@
 package com.nnk.springboot.controllers;
 
+import com.nnk.springboot.config.exception.AlreadyExistException;
 import com.nnk.springboot.domain.BidList;
+import com.nnk.springboot.domain.User;
 import com.nnk.springboot.services.BidListService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,14 +60,23 @@ public class BidListController {
      * @return list of BidList if valid or stay in add page
      */
     @PostMapping("/bidList/validate")
-    public String validate(@Valid BidList bid, BindingResult result, Model model) throws Exception {
-        if (result.hasErrors()) {
-            return "bidList/add";
+    public String validate(@Valid BidList bid, BindingResult result, Model model) {
+        if (!result.hasErrors()) {
+            LOGGER.debug("User validate form Ok");
+            try {
+                bidListService.createBidList(bid);
+                model.addAttribute("message", "Add successful");
+                model.addAttribute("bidList", new BidList());
+                LOGGER.info("BidList added");
+            } catch (AlreadyExistException e) {
+                LOGGER.error("Error during adding BidList " + e.getMessage());
+                model.addAttribute("message", e.getMessage());
+            } catch (Exception e) {
+                LOGGER.error("Error during adding BidList " + e);
+                model.addAttribute("message", "Issue during creating BidList, please retry later");
+            }
         }
-        bidListService.createBidList(bid);
-        model.addAttribute("bidLists", bidListService.getAllBidList());
-        return "redirect:/bidList/list";
-
+        return "bidList/add";
     }
 
     /**
@@ -99,13 +110,30 @@ public class BidListController {
     @PostMapping("/bidList/update/{id}")
     public String updateBid(@PathVariable("id") Integer id, @Valid BidList bidList,
                             BindingResult result, Model model) throws Exception {
-        if (result.hasErrors()) {
+        if (!result.hasErrors()) {
+            LOGGER.debug("User validate form Ok");
+            try {
+                bidListService.updateBidList(bidList, id);
+                model.addAttribute("message", "Update successful");
+                model.addAttribute("bidLists", new BidList());
+                LOGGER.info("BidList added");
+            } catch (AlreadyExistException e) {
+                LOGGER.error("Error during adding BidList " + e.getMessage());
+                model.addAttribute("message", e.getMessage());
+            } catch (Exception e) {
+                LOGGER.error("Error during adding BidList " + e);
+                model.addAttribute("message", "Issue during creating BidList, please retry later");
+            }
+        }
+        return "bidList/update";
+    }
+        /*if (result.hasErrors()) {
             return "bidList/update";
         }
         bidListService.updateBidList(bidList, id);
         model.addAttribute("bidLists", bidListService.getAllBidList());
         return "redirect:/bidList/list";
-    }
+    }*/
 
     /**
      * Delete bidList by Id
